@@ -329,6 +329,7 @@ class MatriceApp:
              raise ValueError("Impossible de déterminer la plage de données de la matrice.")
 
         total_general = 0.0
+        processed_rows = []
         
         for r in range(firstRow, lastRow + 1):
             designation_cell = sheet.cell(row=r, column=COL_DESIGNATION)
@@ -445,11 +446,36 @@ class MatriceApp:
                 for c in range(COL_MONTANT_UNITAIRE, COL_TOTAL_CENTRE + 1):
                     sheet.cell(row=r, column=c).fill = fill_color
                 total_general += total_centre
+                ligne_type = special_calc_key if is_special_calculation else "autre"
+                processed_rows.append({
+                    "designation": designation,
+                    "type": ligne_type,
+                    "quantite": quantity_per_patient_or_center,
+                    "total_ligne": total_ligne,
+                    "total_centre": total_centre,
+                })
         if totalRow > 0:
             sheet.cell(row=totalRow, column=COL_TOTAL_CENTRE).value = total_general
             sheet.cell(row=totalRow, column=COL_TOTAL_CENTRE).fill = highlight_fill_default
         workbook.save(output_file)
-        messagebox.showinfo("Succès", f"Matrice générée avec succès et enregistrée dans {os.path.basename(output_file)}.")
+        lignes_modifiees = len(processed_rows)
+        visites_counts = {"screening": 0, "visite_site": 0, "visite_finale": 0}
+        for row_info in processed_rows:
+            if row_info["type"] in visites_counts:
+                visites_counts[row_info["type"]] += 1
+        messagebox.showinfo(
+            "Succès",
+            (
+                "Matrice générée avec succès.\n"
+                f"Fichier enregistré : {os.path.basename(output_file)}\n"
+                f"Lignes mises à jour : {lignes_modifiees}\n"
+                "Répartition des visites : "
+                f"screening {visites_counts['screening']}, "
+                f"visite sur site {visites_counts['visite_site']}, "
+                f"visite finale {visites_counts['visite_finale']}\n"
+                f"Total général : {total_general:.2f}"
+            ),
+        )
 
     def find_data_rows(self, sheet):
         firstRow, lastRow, totalRow = 0, 0, 0
