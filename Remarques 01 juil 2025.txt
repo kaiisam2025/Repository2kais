@@ -1,0 +1,20 @@
+> attention à la cellule E24 "Forfait maintenance des appareils A évaluer au prorata du nombre d'années": il parait que ça prend le chiffre de complexité de l'etude (1,2 ou  3)
+
+> attention ligne 39 , les nombre de pages additionnelles des crf ne sont pas comptabilisé dans le prix
+ >> Tres bien pour la ligne 40: le code clacules le cout horaire de lecture des pages CRF et le plus important c'est qu'il fait nobre de visite de monito -1 (la visite de screening qu'il ne compte plus car il l'a déjà compté)
+
+> attention aux appels iwrs sur la ligne 46: de mieux garder au prorata
+
+> pour la ligne 45 : "Temps TEC pour la gestion des kits de prélèvement. 1h/ visite avec prélèvements centralisés.Lister les visites" pourquoi tu as choisis 50 sur la cellule E47? tu dois mettre par defaut le nombre de vistes patients(par exemple ici je t'ai fournis 5 visites par patients donc tu mets 5 dans la cellule E47. n'oublie pas que la clonne E est pour "Nombre d'items par patient ou pour le centre" pas pour tous les patients.
+
+> Pour la Section "Estimation du temps infirmier" de la ligne 51 à la ligne 58: peux tu mettre à jour le code de sorte à ce que je saisi à l'entrée:
+
+                                                              1- le nombre de prélèvements sanguins pour analyse "centralisée"? (Lister les visites)
+                                                              2- le nombre de prélèvements d'urine pour l'analyse centralisée? (Lister les visites)
+                                                              3- le nombre de mesure des signes vitaux?(Lister les visites)
+                                                              4- le nombre d'injection du traitement de l'étude - 15min?
+                                                              5- le nombre de pose et retrait de perfusion? (Lister les visites)
+                                                              6- le nombre de pose et retrait de cathéter (Lister les visites)
+                                                              7- le nombre de point de PK/PD? (Lister les visites)
+
+les valeurs saisies doibvent etre utilisés dans les calculs dans les cellules des colonnes E, F et G des lignes 51 à 58. si je ne rentre rien, le code continuer son calcul actuel

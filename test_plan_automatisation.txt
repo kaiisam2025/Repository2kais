@@ -1,0 +1,82 @@
+# Plan de Test pour l'Automatisation de la Matrice V4
+
+## Objectif
+Vérifier que la solution de macros Excel remplit correctement les quantités dans la matrice V4 en fonction des paramètres saisis, en tenant compte de la logique spécifique à chaque ligne (colonnes A et H).
+
+## Prérequis
+1.  Avoir le fichier Excel `1 feuille annexe2_1_cu_V4_francais_mo_vsept24_dgos_ri1.xlsx`.
+2.  Savoir accéder à l'éditeur VBA d'Excel (Alt+F11).
+3.  Avoir les fichiers de code VBA fournis : `userform_code.vba` et `module_code.vba`.
+
+## Instructions d'Installation
+1.  Ouvrez le fichier Excel `1 feuille annexe2_1_cu_V4_francais_mo_vsept24_dgos_ri1.xlsx`.
+2.  Enregistrez-le immédiatement sous un nouveau nom avec l'extension `.xlsm` (Classeur Excel prenant en charge les macros), par exemple `Matrice_V4_Automatisee.xlsm`.
+3.  Ouvrez l'éditeur VBA (Alt+F11).
+4.  Dans l'éditeur VBA, allez dans `Insertion` > `UserForm`. Un nouveau formulaire (`UserForm1` par défaut) apparaît.
+5.  Renommez le formulaire en `frmParametresEtude` dans la fenêtre `Propriétés` (F4 si non visible).
+6.  Concevez le formulaire comme décrit dans `conception_macros_vba.txt` en ajoutant les Labels, ComboBoxes (`cmbNiveau`, `cmbTypeCentre`), TextBoxes (`txtNbPatients`, `txtNbVisites`, `txtDureeEtude`, `txtNbAvenants`, `txtNbVisitesMonitoring`), CheckBox (`chkPersonnelExterieur`) et CommandButtons (`btnGenerer`, `btnEffacer`, `btnAnnuler`). Assurez-vous que les noms des contrôles correspondent exactement à ceux utilisés dans le code.
+7.  Double-cliquez sur le formulaire `frmParametresEtude` dans l'explorateur de projets pour ouvrir sa fenêtre de code.
+8.  Copiez **tout le contenu** du fichier `userform_code.vba` et collez-le dans cette fenêtre de code.
+9.  Dans l'éditeur VBA, allez dans `Insertion` > `Module`. Un nouveau module (`Module1` par défaut) apparaît.
+10. Copiez **tout le contenu** du fichier `module_code.vba` et collez-le dans la fenêtre de code de ce module.
+11. **Vérification importante dans `module_code.vba`** : Vérifiez la constante `PATIENT_COUNT_CELL`. Est-ce bien la cellule `B10` qui contient le nombre de patients dans votre fichier ? Si non, ajustez la constante dans le code.
+12. Enregistrez les modifications dans le fichier `.xlsm`.
+13. (Optionnel) Vous pouvez ajouter un bouton sur la feuille Excel (`Développeur` > `Insérer` > `Bouton (Contrôle de formulaire)`) et lui assigner la macro `LancerFormulaireParametres` pour un accès facile.
+
+## Scénarios de Test
+
+Pour chaque scénario, lancez la macro (via le bouton ou Alt+F8 > `LancerFormulaireParametres`), saisissez les paramètres, cliquez sur "Générer", puis vérifiez les quantités remplies dans la colonne B (ou E) de la matrice.
+
+**Scénario 1 : Simple - Niveau 1 Associé**
+*   Niveau: 1
+*   Nb Patients: 5
+*   Nb Visites: 10
+*   Type Centre: Associé
+*   Durée: 1 an
+*   Avenants: 0
+*   Visites Monitoring: 2
+*   Personnel Extérieur: Non
+*   **Attendu (exemples)** : Q(Frais admin Associé)=1, Q(Mise en place N1)=1, Q(Logistique N1)=5*10=50, Q(Maintenance)=1, Q(Inclusion N1)=5, Q(TEC Formation N1)=max(4,5)=5, Q(TEC Monitoring N1)=2*2.5=5, Q(Clôture N1)=1, Q(Pharma 1ère N1)=1, Q(Pharma Supp N1)=0, Q(Clôture Pharma N1)=1. Les autres lignes spécifiques au protocole doivent rester vides.
+
+**Scénario 2 : Moyen - Niveau 2 Coordonnateur**
+*   Niveau: 2
+*   Nb Patients: 20
+*   Nb Visites: 15
+*   Type Centre: Coordonnateur
+*   Durée: 3 ans
+*   Avenants: 1
+*   Visites Monitoring: 6
+*   Personnel Extérieur: Oui
+*   **Attendu (exemples)** : Q(Frais admin Coord)=1, Q(Avenant Coord)=1, Q(Mise en place N2)=1, Q(Logistique N2)=20*15=300, Q(Logistique Ext)=20*15=300, Q(Maintenance)=3, Q(Inclusion N2)=20, Q(TEC Formation N2)=max(5,6)=6, Q(TEC Monitoring N2)=6*4=24, Q(Clôture N2)=1, Q(Pharma 1ère N2)=1, Q(Pharma Coord)=1, Q(Pharma Supp N2)=3-1=2, Q(Clôture Pharma N2)=1. Les autres lignes spécifiques au protocole doivent rester vides.
+
+**Scénario 3 : Complexe - Niveau 3 Associé**
+*   Niveau: 3
+*   Nb Patients: 50
+*   Nb Visites: 25
+*   Type Centre: Associé
+*   Durée: 5 ans
+*   Avenants: 2
+*   Visites Monitoring: 10
+*   Personnel Extérieur: Non
+*   **Attendu (exemples)** : Q(Frais admin Assoc)=1, Q(Avenant Assoc)=2, Q(Mise en place N3)=1, Q(Logistique N3)=50*25=1250, Q(Maintenance)=5, Q(Inclusion N3)=50, Q(TEC Formation N3)=max(7,8)=8, Q(TEC Monitoring N3)=10*5=50, Q(Clôture N3)=1, Q(Pharma 1ère N3)=1, Q(Pharma Supp N3)=5-1=4, Q(Clôture Pharma N3)=1. Les autres lignes spécifiques au protocole doivent rester vides.
+
+**Scénario 4 : Test Effacement**
+*   Exécutez n'importe quel scénario ci-dessus.
+*   Relancez le formulaire.
+*   Cliquez sur "Effacer les quantités".
+*   Confirmez.
+*   **Attendu** : Toutes les valeurs dans la colonne B (et E si pertinent) entre les lignes de données doivent être effacées. Les totaux doivent se mettre à jour (probablement à 0).
+
+## Points de Vérification
+
+*   Les quantités pour les lignes identifiées comme automatisables sont-elles correctes ?
+*   Les lignes qui dépendent d'informations non fournies (actes spécifiques, nb visites spécifiques, etc.) sont-elles bien laissées vides ?
+*   La macro gère-t-elle correctement les différents niveaux (1, 2, 3) ?
+*   La macro gère-t-elle correctement le type de centre (Coordonnateur/Associé) ?
+*   Les calculs basés sur le nombre de patients, visites, durée, avenants, visites monitoring sont-ils corrects ?
+*   La fonction d'effacement fonctionne-t-elle ?
+*   Des messages d'erreur apparaissent-ils ? Si oui, lesquels et dans quelles circonstances ?
+*   La cellule du nombre de patients (B10?) est-elle mise à jour ?
+
+## Remontée d'Informations
+Veuillez documenter les résultats de chaque scénario, en notant toute différence entre le résultat attendu et le résultat obtenu, ainsi que tout message d'erreur ou comportement inattendu.
